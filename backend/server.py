@@ -296,7 +296,7 @@ async def get_my_shops(current_user: UserBase = Depends(get_current_user)):
     if current_user.user_type != "shop_owner":
         raise HTTPException(status_code=403, detail="Only shop owners can access this")
     
-    shops = await db.shops.find({"owner_id": current_user.id}).to_list(1000)
+    shops = await db.shops.find({"owner_id": current_user.id}, {"_id": 0}).to_list(1000)
     return [Shop(**parse_from_mongo(shop)) for shop in shops]
 
 # Product Routes
