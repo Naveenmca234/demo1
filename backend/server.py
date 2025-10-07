@@ -381,10 +381,13 @@ async def get_cart(current_user: UserBase = Depends(get_current_user)):
     # Get product details for each cart item
     enriched_items = []
     for item in cart_items:
+        # Parse cart item from mongo to handle datetime fields
+        parsed_item = parse_from_mongo(item)
+        
         product = await db.products.find_one({"id": item["product_id"]})
         if product:
             enriched_item = {
-                **item,
+                **parsed_item,
                 "product": Product(**parse_from_mongo(product))
             }
             enriched_items.append(enriched_item)
