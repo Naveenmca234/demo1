@@ -376,7 +376,7 @@ async def get_cart(current_user: UserBase = Depends(get_current_user)):
     if current_user.user_type != "customer":
         raise HTTPException(status_code=403, detail="Only customers can access cart")
     
-    cart_items = await db.cart.find({"customer_id": current_user.id}).to_list(1000)
+    cart_items = await db.cart.find({"customer_id": current_user.id}, {"_id": 0}).to_list(1000)
     
     # Get product details for each cart item
     enriched_items = []
@@ -384,7 +384,7 @@ async def get_cart(current_user: UserBase = Depends(get_current_user)):
         # Parse cart item from mongo to handle datetime fields
         parsed_item = parse_from_mongo(item)
         
-        product = await db.products.find_one({"id": item["product_id"]})
+        product = await db.products.find_one({"id": item["product_id"]}, {"_id": 0})
         if product:
             enriched_item = {
                 **parsed_item,
