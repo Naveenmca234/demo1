@@ -121,10 +121,13 @@ class OrderBuddyTester:
         """Test user registration for all 3 user types"""
         print("\n🔍 Testing User Registration...")
         
+        import random
+        timestamp = str(int(time.time()))
+        
         user_types = [
             {
                 "type": "customer",
-                "email": "priya.customer@orderbuddy.com",
+                "email": f"priya.customer.{timestamp}@orderbuddy.com",
                 "name": "Priya Sharma",
                 "phone": "+91-9876543210",
                 "district": "Chennai",
@@ -133,7 +136,7 @@ class OrderBuddyTester:
             },
             {
                 "type": "shop_owner",
-                "email": "ravi.shopowner@orderbuddy.com", 
+                "email": f"ravi.shopowner.{timestamp}@orderbuddy.com", 
                 "name": "Ravi Kumar",
                 "phone": "+91-9876543211",
                 "district": "Coimbatore",
@@ -142,7 +145,7 @@ class OrderBuddyTester:
             },
             {
                 "type": "delivery_person",
-                "email": "kumar.delivery@orderbuddy.com",
+                "email": f"kumar.delivery.{timestamp}@orderbuddy.com",
                 "name": "Kumar Raj",
                 "phone": "+91-9876543212",
                 "district": "Madurai",
