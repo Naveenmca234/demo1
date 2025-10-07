@@ -595,25 +595,39 @@ const CustomerDashboard = () => {
       {activeTab === 'shops' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {shops.map(shop => (
-            <div key={shop.id} className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-semibold text-gray-800">{shop.name}</h3>
-                <span className={`px-3 py-1 rounded-full text-sm ${
-                  shop.is_open ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                }`}>
-                  {shop.is_open ? 'Open' : 'Closed'}
-                </span>
+            <div key={shop.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+              {/* Shop header with gradient */}
+              <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-xl font-semibold">{shop.name}</h3>
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    shop.is_open ? 'bg-green-400 text-green-900' : 'bg-red-400 text-red-900'
+                  }`}>
+                    {shop.is_open ? 'Open' : 'Closed'}
+                  </span>
+                </div>
+                <p className="text-blue-100 text-sm">
+                  ⭐ {shop.rating}/5 • {shop.total_ratings} reviews
+                </p>
               </div>
-              <p className="text-gray-600 mb-4">{shop.description}</p>
-              <p className="text-sm text-gray-500 mb-4">
-                📍 {shop.village_city}, {shop.taluk}
-              </p>
-              <button
-                onClick={() => fetchProducts(shop.id)}
-                className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                View Products
-              </button>
+              
+              <div className="p-6">
+                <p className="text-gray-600 mb-4">{shop.description}</p>
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-sm text-gray-500">
+                    📍 {shop.village_city}, {shop.taluk}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    🕐 {shop.opening_time} - {shop.closing_time}
+                  </p>
+                </div>
+                <button
+                  onClick={() => fetchProducts(shop.id)}
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-semibold transform hover:scale-105"
+                >
+                  🛍️ Browse Products
+                </button>
+              </div>
             </div>
           ))}
         </div>
