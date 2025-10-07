@@ -622,24 +622,43 @@ const CustomerDashboard = () => {
       {activeTab === 'products' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map(product => (
-            <div key={product.id} className="bg-white rounded-xl shadow-lg p-6">
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">{product.name}</h3>
-              <p className="text-gray-600 mb-3">{product.description}</p>
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-2xl font-bold text-green-600">₹{product.price}</span>
-                <span className="text-sm text-gray-500">Stock: {product.stock_quantity}</span>
+            <div key={product.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+              {product.image_url && (
+                <img 
+                  src={product.image_url} 
+                  alt={product.name}
+                  className="w-full h-48 object-cover"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              )}
+              <div className="p-6">
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">{product.name}</h3>
+                <p className="text-gray-600 mb-3">{product.description}</p>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-2xl font-bold text-green-600">₹{product.price}</span>
+                  <span className={`text-sm px-2 py-1 rounded ${
+                    product.stock_quantity > 20 ? 'bg-green-100 text-green-800' :
+                    product.stock_quantity > 5 ? 'bg-yellow-100 text-yellow-800' :
+                    product.stock_quantity > 0 ? 'bg-red-100 text-red-800' :
+                    'bg-gray-100 text-gray-500'
+                  }`}>
+                    {product.stock_quantity > 0 ? `Stock: ${product.stock_quantity}` : 'Out of Stock'}
+                  </span>
+                </div>
+                <button
+                  onClick={() => addToCart(product.id)}
+                  disabled={product.stock_quantity === 0}
+                  className={`w-full py-2 rounded-lg transition-colors font-semibold ${
+                    product.stock_quantity > 0
+                      ? 'bg-green-600 text-white hover:bg-green-700 transform hover:scale-105'
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  }`}
+                >
+                  {product.stock_quantity > 0 ? 'Add to Cart 🛒' : 'Out of Stock'}
+                </button>
               </div>
-              <button
-                onClick={() => addToCart(product.id)}
-                disabled={product.stock_quantity === 0}
-                className={`w-full py-2 rounded-lg transition-colors ${
-                  product.stock_quantity > 0
-                    ? 'bg-green-600 text-white hover:bg-green-700'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                }`}
-              >
-                {product.stock_quantity > 0 ? 'Add to Cart' : 'Out of Stock'}
-              </button>
             </div>
           ))}
         </div>
