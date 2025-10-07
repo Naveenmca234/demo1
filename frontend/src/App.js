@@ -1193,17 +1193,65 @@ const App = () => {
   );
 };
 
+const SeedDataButton = () => {
+  const [isSeeding, setIsSeeding] = useState(false);
+  const [seedResult, setSeedResult] = useState(null);
+
+  const seedSampleData = async () => {
+    try {
+      setIsSeeding(true);
+      const response = await axios.post(`${API}/seed-data`);
+      setSeedResult(response.data);
+      setTimeout(() => setSeedResult(null), 5000);
+    } catch (error) {
+      console.error('Failed to seed data:', error);
+      setSeedResult({ error: 'Failed to seed sample data' });
+    } finally {
+      setIsSeeding(false);
+    }
+  };
+
+  return (
+    <div className="text-center mb-6">
+      <button
+        onClick={seedSampleData}
+        disabled={isSeeding}
+        className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 text-sm"
+      >
+        {isSeeding ? 'Adding Sample Data...' : '🌱 Add Sample Shops & Products'}
+      </button>
+      
+      {seedResult && (
+        <div className={`mt-3 p-3 rounded text-sm ${seedResult.error ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+          {seedResult.error || `✅ Added ${seedResult.users} users, ${seedResult.shops} shops, ${seedResult.products} products!`}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const AuthenticatedApp = ({ isLogin, setIsLogin }) => {
   const { user } = useAuth();
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        {isLogin ? (
-          <LoginForm onToggle={() => setIsLogin(false)} />
-        ) : (
-          <RegisterForm onToggle={() => setIsLogin(true)} />
-        )}
+      <div 
+        className="min-h-screen flex items-center justify-center p-4"
+        style={{
+          backgroundImage: `linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%), url('https://images.unsplash.com/photo-1696608659936-0392c3c2ec8d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzl8MHwxfHNlYXJjaHw0fHxUYW1pbCUyME5hZHUlMjBzaG9wc3xlbnwwfHx8fDE3NTk4NDQ2MTl8MA&ixlib=rb-4.1.0&q=85')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed'
+        }}
+      >
+        <div className="w-full">
+          <SeedDataButton />
+          {isLogin ? (
+            <LoginForm onToggle={() => setIsLogin(false)} />
+          ) : (
+            <RegisterForm onToggle={() => setIsLogin(true)} />
+          )}
+        </div>
       </div>
     );
   }
