@@ -182,60 +182,105 @@ const LoginForm = ({ onToggle }) => {
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg p-8">
-      <div className="text-center mb-6">
-        <div className="text-4xl mb-2">🤖</div>
-        <h2 className="text-2xl font-bold text-gray-800">Welcome Back!</h2>
-        <p className="text-gray-600">Sign in to OrderBuddy</p>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center max-w-6xl mx-auto p-8">
+      {/* Left side - Beautiful Tamil Nadu shopping images */}
+      <div className="hidden lg:block">
+        <div className="relative">
+          <img 
+            src="https://images.unsplash.com/photo-1666856573860-cb7cd88992b3?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzl8MHwxfHNlYXJjaHwxfHxUYW1pbCUyME5hZHUlMjBzaG9wc3xlbnwwfHx8fDE3NTk4NDQ2MTl8MA&ixlib=rb-4.1.0&q=85"
+            alt="Tamil Nadu Local Market"
+            className="w-full h-96 object-cover rounded-2xl shadow-xl"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-2xl"></div>
+          <div className="absolute bottom-6 left-6 text-white">
+            <h3 className="text-2xl font-bold mb-2">Fresh Local Markets</h3>
+            <p className="text-lg opacity-90">Discover authentic Tamil Nadu shopping experience</p>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-2 gap-4 mt-6">
+          <img 
+            src="https://images.unsplash.com/photo-1588964895597-cfccd6e2dbf9?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDF8MHwxfHNlYXJjaHwxfHxncm9jZXJ5JTIwZGVsaXZlcnl8ZW58MHx8fHwxNzU5ODQ0NjI1fDA&ixlib=rb-4.1.0&q=85"
+            alt="Grocery Delivery"
+            className="w-full h-32 object-cover rounded-xl"
+          />
+          <img 
+            src="https://images.unsplash.com/photo-1757802868665-60b771aa399b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHwxfHxJbmRpYW4lMjBncm9jZXJ5fGVufDB8fHx8MTc1OTg0NDYzMnww&ixlib=rb-4.1.0&q=85"
+            alt="Indian Grocery Products"
+            className="w-full h-32 object-cover rounded-xl"
+          />
+        </div>
       </div>
 
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-          <input
-            type="email"
-            value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            required
-          />
+      {/* Right side - Login form */}
+      <div className="max-w-md mx-auto bg-white rounded-xl shadow-2xl p-8">
+        <div className="text-center mb-6">
+          <div className="text-4xl mb-2 animate-bounce">🤖</div>
+          <h2 className="text-2xl font-bold text-gray-800">Welcome Back!</h2>
+          <p className="text-gray-600">Sign in to OrderBuddy</p>
+          <p className="text-sm text-blue-600 mt-2">Your Tamil Nadu Shopping Companion</p>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
-          <input
-            type="password"
-            value={formData.password}
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            required
-          />
+        {/* Demo credentials */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <p className="text-sm font-semibold text-blue-800 mb-2">Try Demo Accounts:</p>
+          <div className="space-y-1 text-xs text-blue-700">
+            <p><strong>Customer:</strong> priya@customer.com / password123</p>
+            <p><strong>Shop Owner:</strong> ravi@shop.com / password123</p>
+            <p><strong>Delivery:</strong> kumar@delivery.com / password123</p>
+          </div>
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200 font-semibold"
-        >
-          Sign In
-        </button>
-      </form>
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {error}
+          </div>
+        )}
 
-      <div className="text-center mt-6">
-        <p className="text-gray-600">
-          Don't have an account?{' '}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+            <input
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+            <input
+              type="password"
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+
           <button
-            onClick={onToggle}
-            className="text-blue-600 hover:text-blue-700 font-semibold"
+            type="submit"
+            className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200 font-semibold transform hover:scale-105"
           >
-            Sign up
+            Sign In
           </button>
-        </p>
+        </form>
+
+        <div className="text-center mt-6">
+          <p className="text-gray-600">
+            Don't have an account?{' '}
+            <button
+              onClick={onToggle}
+              className="text-blue-600 hover:text-blue-700 font-semibold"
+            >
+              Sign up
+            </button>
+          </p>
+        </div>
       </div>
     </div>
   );
