@@ -315,7 +315,7 @@ async def create_product(shop_id: str, product_data: ProductCreate, current_user
 
 @api_router.get("/shops/{shop_id}/products")
 async def get_shop_products(shop_id: str):
-    products = await db.products.find({"shop_id": shop_id, "is_active": True}).to_list(1000)
+    products = await db.products.find({"shop_id": shop_id, "is_active": True}, {"_id": 0}).to_list(1000)
     return [Product(**parse_from_mongo(product)) for product in products]
 
 @api_router.get("/products/search")
