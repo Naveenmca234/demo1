@@ -550,6 +550,166 @@ async def get_dashboard_stats(current_user: UserBase = Depends(get_current_user)
 async def health_check():
     return {"status": "healthy", "message": "OrderBuddy API is running"}
 
+# Seed sample data route
+@api_router.post("/seed-data")
+async def seed_sample_data():
+    try:
+        # Sample users data
+        sample_users = [
+            {
+                "email": "ravi@shop.com", "password": hash_password("password123"), "name": "Ravi Kumar", 
+                "phone": "+91-9876543210", "user_type": "shop_owner", "district": "Chennai", 
+                "taluk": "Chennai Central", "village_city": "Egmore", "id": str(uuid.uuid4()), 
+                "created_at": datetime.now(timezone.utc).isoformat(), "is_active": True
+            },
+            {
+                "email": "priya@customer.com", "password": hash_password("password123"), "name": "Priya Rajesh", 
+                "phone": "+91-8765432109", "user_type": "customer", "district": "Chennai", 
+                "taluk": "Chennai Central", "village_city": "Egmore", "id": str(uuid.uuid4()), 
+                "created_at": datetime.now(timezone.utc).isoformat(), "is_active": True
+            },
+            {
+                "email": "kumar@delivery.com", "password": hash_password("password123"), "name": "Kumar Murugan", 
+                "phone": "+91-7654321098", "user_type": "delivery_person", "district": "Chennai", 
+                "taluk": "Chennai Central", "village_city": "Egmore", "id": str(uuid.uuid4()), 
+                "created_at": datetime.now(timezone.utc).isoformat(), "is_active": True
+            },
+            {
+                "email": "lakshmi@shop.com", "password": hash_password("password123"), "name": "Lakshmi Devi", 
+                "phone": "+91-6543210987", "user_type": "shop_owner", "district": "Coimbatore", 
+                "taluk": "Coimbatore North", "village_city": "Gandhipuram", "id": str(uuid.uuid4()), 
+                "created_at": datetime.now(timezone.utc).isoformat(), "is_active": True
+            },
+            {
+                "email": "arun@customer.com", "password": hash_password("password123"), "name": "Arun Selvam", 
+                "phone": "+91-5432109876", "user_type": "customer", "district": "Madurai", 
+                "taluk": "Madurai East", "village_city": "Anna Nagar", "id": str(uuid.uuid4()), 
+                "created_at": datetime.now(timezone.utc).isoformat(), "is_active": True
+            }
+        ]
+        
+        # Insert users if not exists
+        for user in sample_users:
+            existing = await db.users.find_one({"email": user["email"]})
+            if not existing:
+                await db.users.insert_one(user)
+        
+        # Get shop owner IDs for creating shops
+        ravi_user = await db.users.find_one({"email": "ravi@shop.com"})
+        lakshmi_user = await db.users.find_one({"email": "lakshmi@shop.com"})
+        
+        # Sample shops data
+        sample_shops = [
+            {
+                "id": str(uuid.uuid4()), "name": "Ravi's Fresh Grocery", 
+                "description": "Fresh vegetables, fruits, and daily essentials", 
+                "owner_id": ravi_user["id"], "district": "Chennai", "taluk": "Chennai Central", 
+                "village_city": "Egmore", "is_open": True, "opening_time": "07:00", 
+                "closing_time": "22:00", "rating": 4.5, "total_ratings": 124, 
+                "created_at": datetime.now(timezone.utc).isoformat()
+            },
+            {
+                "id": str(uuid.uuid4()), "name": "Tamil Nadu Snacks Corner", 
+                "description": "Traditional Tamil snacks, sweets, and beverages", 
+                "owner_id": ravi_user["id"], "district": "Chennai", "taluk": "Chennai Central", 
+                "village_city": "Egmore", "is_open": True, "opening_time": "09:00", 
+                "closing_time": "21:00", "rating": 4.2, "total_ratings": 89, 
+                "created_at": datetime.now(timezone.utc).isoformat()
+            },
+            {
+                "id": str(uuid.uuid4()), "name": "Lakshmi's Organic Store", 
+                "description": "Organic vegetables, grains, and health products", 
+                "owner_id": lakshmi_user["id"], "district": "Coimbatore", "taluk": "Coimbatore North", 
+                "village_city": "Gandhipuram", "is_open": True, "opening_time": "08:00", 
+                "closing_time": "20:00", "rating": 4.7, "total_ratings": 156, 
+                "created_at": datetime.now(timezone.utc).isoformat()
+            }
+        ]
+        
+        # Insert shops if not exists
+        for shop in sample_shops:
+            existing = await db.shops.find_one({"name": shop["name"]})
+            if not existing:
+                await db.shops.insert_one(shop)
+        
+        # Get shop IDs for creating products
+        shops = await db.shops.find({}, {"_id": 0}).to_list(10)
+        
+        # Sample products data with images
+        sample_products = []
+        
+        # Products for Ravi's Fresh Grocery
+        grocery_shop = next((s for s in shops if s["name"] == "Ravi's Fresh Grocery"), None)
+        if grocery_shop:
+            grocery_products = [
+                {"name": "Fresh Tomatoes", "description": "Farm fresh red tomatoes - 1kg", "price": 40.0, "category": "Vegetables", "stock_quantity": 50, "image_url": "https://images.unsplash.com/photo-1666856573860-cb7cd88992b3"},
+                {"name": "Onions", "description": "Premium quality onions - 1kg", "price": 35.0, "category": "Vegetables", "stock_quantity": 75, "image_url": "https://images.unsplash.com/photo-1666856692540-7ec4bf1f4e10"},
+                {"name": "Basmati Rice", "description": "Premium basmati rice - 5kg pack", "price": 450.0, "category": "Grains", "stock_quantity": 30, "image_url": "https://images.unsplash.com/photo-1696608659936-0392c3c2ec8d"},
+                {"name": "Fresh Bananas", "description": "Organic bananas - 1 dozen", "price": 60.0, "category": "Fruits", "stock_quantity": 40, "image_url": "https://images.pexels.com/photos/23956683/pexels-photo-23956683.jpeg"},
+                {"name": "Coconut Oil", "description": "Pure coconut oil - 500ml", "price": 180.0, "category": "Oils", "stock_quantity": 25, "image_url": "https://images.unsplash.com/photo-1588964895597-cfccd6e2dbf9"}
+            ]
+            for product in grocery_products:
+                product.update({
+                    "id": str(uuid.uuid4()), "shop_id": grocery_shop["id"], 
+                    "created_at": datetime.now(timezone.utc).isoformat(), "is_active": True
+                })
+                sample_products.append(product)
+        
+        # Products for Tamil Nadu Snacks Corner
+        snacks_shop = next((s for s in shops if s["name"] == "Tamil Nadu Snacks Corner"), None)
+        if snacks_shop:
+            snack_products = [
+                {"name": "Murukku", "description": "Traditional Tamil murukku - 250g pack", "price": 80.0, "category": "Snacks", "stock_quantity": 60, "image_url": "https://images.unsplash.com/photo-1739065882957-7db99eaf9a08"},
+                {"name": "Mysore Pak", "description": "Authentic Mysore pak sweets - 500g", "price": 220.0, "category": "Sweets", "stock_quantity": 35, "image_url": "https://images.unsplash.com/photo-1739065882919-03c8ae1a3da3"},
+                {"name": "Filter Coffee Powder", "description": "Premium South Indian coffee - 250g", "price": 150.0, "category": "Beverages", "stock_quantity": 45, "image_url": "https://images.pexels.com/photos/3978831/pexels-photo-3978831.jpeg"},
+                {"name": "Sambar Powder", "description": "Homemade sambar powder - 200g", "price": 90.0, "category": "Spices", "stock_quantity": 55, "image_url": "https://images.unsplash.com/photo-1757802868665-60b771aa399b"},
+                {"name": "Ribbon Pakoda", "description": "Crispy ribbon pakoda - 300g pack", "price": 120.0, "category": "Snacks", "stock_quantity": 40, "image_url": "https://images.unsplash.com/photo-1695653422259-8a74ffe90401"}
+            ]
+            for product in snack_products:
+                product.update({
+                    "id": str(uuid.uuid4()), "shop_id": snacks_shop["id"], 
+                    "created_at": datetime.now(timezone.utc).isoformat(), "is_active": True
+                })
+                sample_products.append(product)
+        
+        # Products for Lakshmi's Organic Store
+        organic_shop = next((s for s in shops if s["name"] == "Lakshmi's Organic Store"), None)
+        if organic_shop:
+            organic_products = [
+                {"name": "Organic Turmeric", "description": "Pure organic turmeric powder - 100g", "price": 120.0, "category": "Spices", "stock_quantity": 30, "image_url": "https://images.pexels.com/photos/7551597/pexels-photo-7551597.jpeg"},
+                {"name": "Millets Mix", "description": "Healthy mixed millets - 1kg", "price": 200.0, "category": "Grains", "stock_quantity": 25, "image_url": "https://images.unsplash.com/photo-1666856573860-cb7cd88992b3"},
+                {"name": "Organic Jaggery", "description": "Pure organic jaggery - 500g", "price": 160.0, "category": "Sweeteners", "stock_quantity": 40, "image_url": "https://images.unsplash.com/photo-1666856692540-7ec4bf1f4e10"},
+                {"name": "Herbal Tea", "description": "Immunity boosting herbal tea - 100g", "price": 250.0, "category": "Beverages", "stock_quantity": 20, "image_url": "https://images.unsplash.com/photo-1696608659936-0392c3c2ec8d"},
+                {"name": "Organic Honey", "description": "Pure forest honey - 500g", "price": 350.0, "category": "Natural Products", "stock_quantity": 15, "image_url": "https://images.pexels.com/photos/23956683/pexels-photo-23956683.jpeg"}
+            ]
+            for product in organic_products:
+                product.update({
+                    "id": str(uuid.uuid4()), "shop_id": organic_shop["id"], 
+                    "created_at": datetime.now(timezone.utc).isoformat(), "is_active": True
+                })
+                sample_products.append(product)
+        
+        # Insert products if not exists
+        for product in sample_products:
+            existing = await db.products.find_one({"name": product["name"], "shop_id": product["shop_id"]})
+            if not existing:
+                await db.products.insert_one(product)
+        
+        return {
+            "message": "Sample data seeded successfully!",
+            "users": len(sample_users),
+            "shops": len(sample_shops),
+            "products": len(sample_products),
+            "demo_credentials": {
+                "shop_owner": {"email": "ravi@shop.com", "password": "password123"},
+                "customer": {"email": "priya@customer.com", "password": "password123"},
+                "delivery_person": {"email": "kumar@delivery.com", "password": "password123"}
+            }
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error seeding data: {str(e)}")
+
 # Include the router in the main app
 app.include_router(api_router)
 
