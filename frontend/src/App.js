@@ -686,13 +686,23 @@ const CustomerDashboard = () => {
           ) : (
             <>
               {cart.map(item => (
-                <div key={item.id} className="flex items-center justify-between border-b py-4">
-                  <div>
+                <div key={item.id} className="flex items-center space-x-4 border-b py-4">
+                  {item.product.image_url && (
+                    <img 
+                      src={item.product.image_url} 
+                      alt={item.product.name}
+                      className="w-16 h-16 object-cover rounded-lg"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  )}
+                  <div className="flex-1">
                     <h3 className="font-semibold">{item.product.name}</h3>
-                    <p className="text-gray-600">Quantity: {item.quantity}</p>
+                    <p className="text-gray-600">Quantity: {item.quantity} • ₹{item.product.price} each</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold">₹{item.product.price * item.quantity}</p>
+                    <p className="font-bold text-green-600">₹{item.product.price * item.quantity}</p>
                   </div>
                 </div>
               ))}
