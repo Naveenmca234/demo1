@@ -288,7 +288,7 @@ async def get_shops(district: str = None, taluk: str = None, village_city: str =
     if village_city:
         filter_query["village_city"] = village_city
     
-    shops = await db.shops.find(filter_query).to_list(1000)
+    shops = await db.shops.find(filter_query, {"_id": 0}).to_list(1000)
     return [Shop(**parse_from_mongo(shop)) for shop in shops]
 
 @api_router.get("/shops/my")
