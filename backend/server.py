@@ -458,8 +458,8 @@ async def update_order_status(order_id: str, status_update: OrderStatusUpdate, c
     if not can_update:
         raise HTTPException(status_code=403, detail="Not authorized to update this order")
     
-    update_data = {"status": status}
-    if status == "delivered":
+    update_data = {"status": status_update.status}
+    if status_update.status == "delivered":
         update_data["delivered_at"] = datetime.now(timezone.utc).isoformat()
     
     await db.orders.update_one({"id": order_id}, {"$set": update_data})
