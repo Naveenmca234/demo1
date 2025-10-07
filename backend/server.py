@@ -341,7 +341,7 @@ async def search_products(query: str = "", district: str = None, taluk: str = No
             {"description": {"$regex": query, "$options": "i"}}
         ]
     
-    products = await db.products.find(product_filter).to_list(1000)
+    products = await db.products.find(product_filter, {"_id": 0}).to_list(1000)
     return [Product(**parse_from_mongo(product)) for product in products]
 
 # Cart Routes
