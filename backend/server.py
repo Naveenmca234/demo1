@@ -423,14 +423,14 @@ async def create_order(order_data: OrderCreate, current_user: UserBase = Depends
 @api_router.get("/orders")
 async def get_orders(current_user: UserBase = Depends(get_current_user)):
     if current_user.user_type == "customer":
-        orders = await db.orders.find({"customer_id": current_user.id}).to_list(1000)
+        orders = await db.orders.find({"customer_id": current_user.id}, {"_id": 0}).to_list(1000)
     elif current_user.user_type == "shop_owner":
         # Get orders for shops owned by this user
-        shops = await db.shops.find({"owner_id": current_user.id}).to_list(1000)
+        shops = await db.shops.find({"owner_id": current_user.id}, {"_id": 0}).to_list(1000)
         shop_ids = [shop["id"] for shop in shops]
-        orders = await db.orders.find({"shop_id": {"$in": shop_ids}}).to_list(1000)
+        orders = await db.orders.find({"shop_id": {"$in": shop_ids}}, {"_id": 0}).to_list(1000)
     elif current_user.user_type == "delivery_person":
-        orders = await db.orders.find({"delivery_person_id": current_user.id}).to_list(1000)
+        orders = await db.orders.find({"delivery_person_id": current_user.id}, {"_id": 0}).to_list(1000)
     else:
         orders = []
     
