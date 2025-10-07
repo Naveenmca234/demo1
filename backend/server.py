@@ -436,8 +436,11 @@ async def get_orders(current_user: UserBase = Depends(get_current_user)):
     
     return [Order(**parse_from_mongo(order)) for order in orders]
 
+class OrderStatusUpdate(BaseModel):
+    status: str
+
 @api_router.patch("/orders/{order_id}/status")
-async def update_order_status(order_id: str, status: str, current_user: UserBase = Depends(get_current_user)):
+async def update_order_status(order_id: str, status_update: OrderStatusUpdate, current_user: UserBase = Depends(get_current_user)):
     # Verify user can update this order
     order = await db.orders.find_one({"id": order_id})
     if not order:
